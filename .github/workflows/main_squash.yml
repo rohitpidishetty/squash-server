@@ -13,18 +13,22 @@ jobs:
       contents: read # required for actions/checkout
 
     steps:
+      # Checkout the code
       - uses: actions/checkout@v4
 
+      # Set up Java
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
+      # Build the JAR
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      - name: Upload artifact for deployment job
+      # Upload the built JAR as artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: java-app
@@ -34,18 +38,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write # Required for Azure login
-      contents: read # Required for checkout
+      id-token: write # required for Azure login
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      # Download the artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: java-app
 
-      - name: List downloaded JAR (for debug)
-        run: ls -R ${{ github.workspace }}/java-app
+      # List downloaded files (for debugging)
+      - name: List files
+        run: ls -R ${{ github.workspace }}
 
+      # Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -53,9 +60,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0724F5CE5D4642BA91D2ED718F9FFF64 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ECB50E8EE1C14CF090923B961E3E02DA }}
 
+      # Deploy the JAR to Azure
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Squash'
           slot-name: 'Production'
-          package: '${{ github.workspace }}/java-app/*.jar'
+          package: '*.jar'
