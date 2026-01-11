@@ -14,7 +14,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
+
+    @CrossOrigin(
+    origins = "*",
+    allowedHeaders = "*",
+    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS },
+    exposedHeaders = {
+        HttpHeaders.CONTENT_DISPOSITION,
+        HttpHeaders.CONTENT_TYPE
+    }
+)
 @RestController
 @RequestMapping("/squash")
 public class SquashController {
