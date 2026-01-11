@@ -21,6 +21,16 @@ public class SquashController {
     @Autowired
     protected Squash sq;
 
+
+     @GetMapping("/test")
+    public Map<String, String> test() {
+        return HashMap<>() {
+            {
+                put("1","1");
+            }
+        };
+    }
+
     @PostMapping("/compress")
     public ResponseEntity<StreamingResponseBody> compress(@RequestBody Map<Object, Object> payload) {
         Map<?, ?> m = (Map<?, ?>) payload.get("data");
