@@ -40,6 +40,13 @@ public class SquashController {
         };
     }
 
+     
+    @RequestMapping(value = "/compress", method = RequestMethod.OPTIONS)
+    public ResponseEntity<Void> preflightCompress() {
+        return ResponseEntity.ok().build();
+    }
+
+
     @PostMapping("/compress")
     public ResponseEntity<StreamingResponseBody> compress(@RequestBody Map<Object, Object> payload) {
         Map<?, ?> m = (Map<?, ?>) payload.get("data");
