@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy JAR app to Azure Web App - Squash
 
 on:
@@ -13,24 +10,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read # required for actions/checkout
 
     steps:
-      # Checkout code
       - uses: actions/checkout@v4
 
-      # Set up Java
-      - name: Set up Java version
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
 
-      # Build JAR with Maven
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      # Upload JAR artifact for deploy job
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -38,27 +31,31 @@ jobs:
           path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
-  runs-on: ubuntu-latest
-  needs: build
-  steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: java-app
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write # Required for Azure login
+      contents: read # Required for checkout
 
-    - name: List JAR for debug
-      run: ls -R ${{ github.workspace }}/java-app
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: java-app
 
-    - name: Login to Azure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4DABA2B4C0354C11A594135DE81EB942 }}
-        tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0724F5CE5D4642BA91D2ED718F9FFF64 }}
-        subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ECB50E8EE1C14CF090923B961E3E02DA }}
+      - name: List downloaded JAR (for debug)
+        run: ls -R ${{ github.workspace }}/java-app
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'Squash'
-        slot-name: 'Production'
-        package: ${{ github.workspace }}/java-app/*.jar
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4DABA2B4C0354C11A594135DE81EB942 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0724F5CE5D4642BA91D2ED718F9FFF64 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ECB50E8EE1C14CF090923B961E3E02DA }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'Squash'
+          slot-name: 'Production'
+          package: '${{ github.workspace }}/java-app/*.jar'
