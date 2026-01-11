@@ -24,7 +24,7 @@ public class SquashController {
 
      @GetMapping("/test")
     public Map<String, String> test() {
-        return HashMap<>() {
+        return new HashMap<>() {
             {
                 put("1","1");
             }
