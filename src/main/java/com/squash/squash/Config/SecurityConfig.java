@@ -18,10 +18,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(Customizer.withDefaults())   // 🔥 THIS IS CRITICAL
+            .cors(Customizer.withDefaults())   
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // preflight
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .anyRequest().permitAll()
             );
 
@@ -43,7 +43,7 @@ public class SecurityConfig {
 
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Content-Disposition"));
-        config.setAllowCredentials(false); // true only if using cookies
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -51,5 +51,6 @@ public class SecurityConfig {
         return source;
     }
 }
+
 
 
