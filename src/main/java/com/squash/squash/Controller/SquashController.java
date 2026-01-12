@@ -14,38 +14,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-    @CrossOrigin(
-    origins = "*",
-    allowedHeaders = "*",
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS },
-    exposedHeaders = {
-        HttpHeaders.CONTENT_DISPOSITION,
-        HttpHeaders.CONTENT_TYPE
-    }
-)
+@CrossOrigin
 @RestController
 @RequestMapping("/squash")
 public class SquashController {
     @Autowired
     protected Squash sq;
 
-
-     @GetMapping("/test")
+    @GetMapping("/test")
     public Map<String, String> test() {
         return new HashMap<>() {
             {
-                put("1","1");
+                put("1", "1");
             }
         };
     }
-
-     
-    @RequestMapping(value = "/compress", method = RequestMethod.OPTIONS)
-    public ResponseEntity<Void> preflightCompress() {
-        return ResponseEntity.ok().build();
-    }
-
 
     @PostMapping("/compress")
     public ResponseEntity<StreamingResponseBody> compress(@RequestBody Map<Object, Object> payload) {
