@@ -39,7 +39,7 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
             "http://localhost:3000",
-            "https://your-frontend-domain.com"
+            "https://squash-arch.web.app"
         ));
 
         config.setAllowedMethods(List.of(
@@ -56,6 +56,7 @@ public class SecurityConfig {
         return source;
     }
 }
+
 
 
 
