@@ -21,6 +21,16 @@ public class SquashController {
     @Autowired
     protected Squash sq;
 
+
+    @RequestMapping(value = "/compress", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handlePreflight() {
+        return ResponseEntity.ok()
+                .header("Access-Control-Allow-Origin", "https://squash-arch.web.app")
+                .header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .build();
+    }
+
     @GetMapping("/test")
     public Map<String, String> test() {
         return new HashMap<>() {
@@ -46,3 +56,4 @@ public class SquashController {
         return data;
     }
 }
+
