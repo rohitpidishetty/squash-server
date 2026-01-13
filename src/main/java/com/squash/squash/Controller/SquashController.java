@@ -4,8 +4,10 @@ import com.squash.squash.Service.Squash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
@@ -21,16 +23,6 @@ public class SquashController {
     @Autowired
     protected Squash sq;
 
-
-    @RequestMapping(value = "/compress", method = RequestMethod.OPTIONS)
-    public ResponseEntity<?> handlePreflight() {
-        return ResponseEntity.ok()
-                .header("Access-Control-Allow-Origin", "https://squash-arch.web.app")
-                .header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-                .header("Access-Control-Allow-Headers", "*")
-                .build();
-    }
-
     @GetMapping("/test")
     public Map<String, String> test() {
         return new HashMap<>() {
@@ -40,20 +32,21 @@ public class SquashController {
         };
     }
 
-    @PostMapping("/compress")
-    public ResponseEntity<StreamingResponseBody> compress(@RequestBody Map<Object, Object> payload) {
-        Map<?, ?> m = (Map<?, ?>) payload.get("data");
-        String TAR_FILE = (String) m.get("uid");
-        return sq.compress((Map<Object, Object>) m.get("fileContent"), TAR_FILE);
+    @PostMapping(
+            value = "/compress",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<StreamingResponseBody> compress(@RequestParam String uid, @RequestPart("files") List<MultipartFile> files) {
+
+        return sq.compress(uid, files);
     }
 
-    @PostMapping("/decompress")
-    public Map<String, String> decompress(@RequestBody Map<Object, Object> payload) {
+    @PostMapping(
+            value = "/decompress",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<Map<String, String>> decompress(@RequestParam String uid, @RequestPart("file") MultipartFile file) {
 
-        Map<String, String> data = sq.decompress((String) payload.get("uid"), (String) payload.get("filename"), (Object) payload.get("content"));
-//        System.out.println(data);
-
-        return data;
+        return sq.decompress(uid, file);
     }
 }
-

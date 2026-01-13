@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://squash-arch.web.app")); // exact origin
+        config.setAllowedOrigins(List.of("https://squash-arch.web.app", "http://localhost:3000")); // exact origin
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Content-Disposition", "Content-Type"));
@@ -43,4 +43,5 @@ public class SecurityConfig {
         return source;
     }
 }
+
 
